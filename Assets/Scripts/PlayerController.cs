@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
 
     [Space]
 
-    public Transform currentCube;
-    public Transform clickedCube;
+    public Transform currentPlatform;
+    public Transform targetPlatform;
     public Transform indicator;
 
     [Space]
@@ -31,9 +31,9 @@ public class PlayerController : MonoBehaviour
     {
         GetPlayerCurrentPosition();
 
-        if (currentCube.GetComponent<Walkable>().movingGround)
+        if (currentPlatform.GetComponent<Walkable>().movingGround)
         {
-            transform.parent = currentCube.parent;
+            transform.parent = currentPlatform.parent;
         }
         else
         {
@@ -54,16 +54,16 @@ public class PlayerController : MonoBehaviour
         List<Transform> nextCubes = new List<Transform>();
         List<Transform> pastCubes = new List<Transform>();
 
-        foreach (WalkPath path in currentCube.GetComponent<Walkable>().possiblePaths)
+        foreach (WalkPath path in currentPlatform.GetComponent<Walkable>().possiblePaths)
         {
             if (path.active)
             {
                 nextCubes.Add(path.target);
-                path.target.GetComponent<Walkable>().previousBlock = currentCube;
+                path.target.GetComponent<Walkable>().previousBlock = currentPlatform;
             }
         }
 
-        pastCubes.Add(currentCube);
+        pastCubes.Add(currentPlatform);
 
         ExploreCube(nextCubes, pastCubes);
         BuildPath();
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         Transform current = nextCubes.First();
         nextCubes.Remove(current);
 
-        if (current == clickedCube)
+        if (current == targetPlatform)
         {
             return;
         }
@@ -98,8 +98,8 @@ public class PlayerController : MonoBehaviour
 
     void BuildPath()
     {
-        Transform cube = clickedCube;
-        while (cube != currentCube)
+        Transform cube = targetPlatform;
+        while (cube != currentPlatform)
         {
             finalPath.Add(cube);
             if (cube.GetComponent<Walkable>().previousBlock != null)
@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
                 return;
         }
 
-        finalPath.Insert(0, clickedCube);
+        finalPath.Insert(0, targetPlatform);
         
         FollowPath();
     }
@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
                s.Join(transform.DOLookAt(finalPath[i].position, .1f, AxisConstraint.Y, Vector3.up));
         }
 
-        if (clickedCube.GetComponent<Walkable>().isButton)
+        if (targetPlatform.GetComponent<Walkable>().isButton)
         {
             s.AppendCallback(()=>GameManager.instance.RotateRightPivot());
         }
@@ -157,7 +157,7 @@ public class PlayerController : MonoBehaviour
         {
             if (playerHit.transform.GetComponent<Walkable>() != null)
             {
-                currentCube = playerHit.transform;
+                currentPlatform = playerHit.transform;
 
                 // if (playerHit.transform.GetComponent<Walkable>().isStair)
                 // {
@@ -190,7 +190,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (mouseHit.transform.GetComponent<Walkable>() != null)
                 {
-                    clickedCube = mouseHit.transform;
+                    targetPlatform = mouseHit.transform;
                     return true;
                 }
             }
