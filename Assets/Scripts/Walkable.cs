@@ -9,10 +9,6 @@ public class Walkable : MonoBehaviour
 
     [Space]
 
-    public Transform previousBlock;
-
-    [Space]
-
     [Header("Booleans")]
     public bool isStair = false;
     public bool movingGround = false;

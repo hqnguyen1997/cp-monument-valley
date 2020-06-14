@@ -16,10 +16,6 @@ public class PlayerController : MonoBehaviour
     public Transform targetPlatform;
     public Transform indicator;
 
-    [Space]
-
-    public List<Transform> finalPath = new List<Transform>();
-
     private float blend;
 
     void Start()
@@ -63,28 +59,12 @@ public class PlayerController : MonoBehaviour
 
             if(!path[i].GetComponent<Walkable>().dontRotate)
                s.Join(transform.DOLookAt(path[i].position, .1f, AxisConstraint.Y, Vector3.up));
-            // Clear dijkstra attribute
-            path[i].GetComponent<Walkable>().Visited = false;
-            path[i].GetComponent<Walkable>().MinCostToStart = 0;
-            path[i].GetComponent<Walkable>().NearestToStart = null;
         }
 
         if (targetPlatform.GetComponent<Walkable>().isButton)
         {
             s.AppendCallback(()=>GameManager.instance.RotateRightPivot());
         }
-
-        s.AppendCallback(() => Clear());
-    }
-
-    void Clear()
-    {
-        foreach (Transform t in finalPath)
-        {
-            t.GetComponent<Walkable>().previousBlock = null;
-        }
-        finalPath.Clear();
-        walking = false;
     }
 
     public void GetPlayerCurrentPosition()
@@ -114,14 +94,11 @@ public class PlayerController : MonoBehaviour
     */
     public void MovePlayer() {
         DOTween.Kill(gameObject.transform);
-        finalPath.Clear();
-        // FindPath();
-        /**
-        Hier find path
-        */
+        ClearOldDijkstraAttributes();
         DijkstraSearch();
         List<Transform> path = GetShortestPath();
         ExecuteMovevements(path);
+        walking = false;
     }
 
     public List<Transform> GetShortestPath()
@@ -168,6 +145,15 @@ public class PlayerController : MonoBehaviour
             if (node == targetPlatform)
                 return;
         } while (prioQueue.Any());
+    }
+
+    private void ClearOldDijkstraAttributes() {
+        Walkable[] walkableNodes = FindObjectsOfType<Walkable>();
+        foreach (Walkable node in walkableNodes) {
+            node.Visited = false;
+            node.MinCostToStart = 0;
+            node.NearestToStart = null;
+        }
     }
 
     /*  Check if click hits a platform

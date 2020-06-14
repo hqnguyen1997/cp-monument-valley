@@ -230,11 +230,17 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 1830024113}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
+  - target: {fileID: 1655977871}
+    active: 1
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!1 &170553731
@@ -346,11 +352,17 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 325142320}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
+  - target: {fileID: 367042959}
+    active: 1
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!1 &284762979
@@ -555,11 +567,17 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 606126629}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
+  - target: {fileID: 170553732}
+    active: 1
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!1001 &367042958
@@ -683,11 +701,14 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 170553732}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!1001 &509859579
@@ -793,10 +814,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walking: 0
-  currentCube: {fileID: 367042959}
-  clickedCube: {fileID: 0}
+  currentPlatform: {fileID: 367042959}
+  targetPlatform: {fileID: 0}
   indicator: {fileID: 0}
-  finalPath: []
 --- !u!1 &592703897
 GameObject:
   m_ObjectHideFlags: 0
@@ -855,7 +875,7 @@ GameObject:
   - component: {fileID: 606126630}
   - component: {fileID: 606126633}
   m_Layer: 0
-  m_Name: Cube (8)
+  m_Name: Cube (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -950,11 +970,17 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 2126960251}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
+  - target: {fileID: 325142320}
+    active: 1
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!1 &705507993
@@ -1521,11 +1547,17 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 1502274323}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
+  - target: {fileID: 1315266566}
+    active: 1
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!114 &1070277902
@@ -1541,11 +1573,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possiblePaths: []
-  previousBlock: {fileID: 0}
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!1 &1314552241
@@ -1691,11 +1725,17 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 1070277897}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
+  - target: {fileID: 1830024113}
+    active: 1
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!1 &1502274322
@@ -1807,11 +1847,14 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 1070277897}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!1 &1655977870
@@ -1923,11 +1966,17 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 78490689}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
+  - target: {fileID: 2126960251}
+    active: 1
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!1 &1697514887
@@ -2132,11 +2181,17 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 1315266566}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
+  - target: {fileID: 78490689}
+    active: 1
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
 --- !u!1001 &1886669379
@@ -2348,10 +2403,16 @@ MonoBehaviour:
   possiblePaths:
   - target: {fileID: 1655977871}
     active: 1
-  previousBlock: {fileID: 0}
+    Cost: 1
+  - target: {fileID: 606126629}
+    active: 1
+    Cost: 1
   isStair: 0
   movingGround: 0
   isButton: 0
   dontRotate: 0
+  MinCostToStart: 0
+  Visited: 0
+  NearestToStart: {fileID: 0}
   walkPointOffset: 0.5
   stairOffset: 0.4
