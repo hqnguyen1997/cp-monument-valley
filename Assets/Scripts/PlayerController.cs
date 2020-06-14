@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using DG.Tweening;
 
+/* This script need to be assigned to a player object */
 [SelectionBase]
 public class PlayerController : MonoBehaviour
 {
@@ -23,15 +24,12 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        RayCastDown();
+        GetPlayerCurrentPosition();
     }
 
     void Update()
     {
-
-        //GET CURRENT CUBE (UNDER PLAYER)
-
-        RayCastDown();
+        GetPlayerCurrentPosition();
 
         if (currentCube.GetComponent<Walkable>().movingGround)
         {
@@ -42,31 +40,11 @@ public class PlayerController : MonoBehaviour
             transform.parent = null;
         }
 
-        // CLICK ON CUBE
-
+        // Handle on click event
         if (Input.GetMouseButtonDown(0))
-        {
-            Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition); RaycastHit mouseHit;
-
-            if (Physics.Raycast(mouseRay, out mouseHit))
-            {
-                if (mouseHit.transform.GetComponent<Walkable>() != null)
-                {
-                    clickedCube = mouseHit.transform;
-                    DOTween.Kill(gameObject.transform);
-                    finalPath.Clear();
-                    FindPath();
-
-                    blend = transform.position.y - clickedCube.position.y > 0 ? -1 : 1;
-
-                    indicator.position = mouseHit.transform.GetComponent<Walkable>().GetWalkPoint();
-                    Sequence s = DOTween.Sequence();
-                    s.AppendCallback(() => indicator.GetComponentInChildren<ParticleSystem>().Play());
-                    s.Append(indicator.GetComponent<Renderer>().material.DOColor(Color.white, .1f));
-                    s.Append(indicator.GetComponent<Renderer>().material.DOColor(Color.black, .3f).SetDelay(.2f));
-                    s.Append(indicator.GetComponent<Renderer>().material.DOColor(Color.clear, .3f));
-
-                }
+        {   
+            if (isClickedOnPlatform()) {
+                MovePlayer();
             }
         }
     }
@@ -169,16 +147,12 @@ public class PlayerController : MonoBehaviour
         walking = false;
     }
 
-    public void RayCastDown()
+    public void GetPlayerCurrentPosition()
     {
-
         Vector3 fwd = transform.TransformDirection(Vector3.forward);
         RaycastHit playerHit;
         Debug.DrawRay(transform.position, fwd * 50, Color.red, 0.5f);
-        // Ray playerRay = new Ray(transform.GetChild(0).position, -transform.up);
-        // RaycastHit playerHit;
 
-        // if (Physics.Raycast(playerRay, out playerHit))
         if (Physics.Raycast(transform.position, fwd, out playerHit, 50))
         {
             if (playerHit.transform.GetComponent<Walkable>() != null)
@@ -196,7 +170,33 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    /* Move player to target platform
+    */
+    public void MovePlayer() {
+        DOTween.Kill(gameObject.transform);
+        finalPath.Clear();
+        FindPath();
+    }
 
+    /*  Check if click hits a platform
+        set the target platform and return true 
+    */
+    public bool isClickedOnPlatform() {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition); RaycastHit mouseHit;
+
+            if (Physics.Raycast(mouseRay, out mouseHit))
+            {
+                if (mouseHit.transform.GetComponent<Walkable>() != null)
+                {
+                    clickedCube = mouseHit.transform;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
