@@ -18,9 +18,12 @@ public class Walkable : MonoBehaviour
     public bool movingGround = false;
     public bool isButton;
     public bool dontRotate;
-
+    
     [Space]
-
+    [Header("DijkstraAlgorithm")]
+    public int MinCostToStart = 0;
+    public bool Visited = false;
+    public Transform NearestToStart;
     [Header("Offsets")]
     public float walkPointOffset = .5f;
     public float stairOffset = .4f;
@@ -55,4 +58,5 @@ public class WalkPath
 {
     public Transform target;
     public bool active = true;
+    public int Cost = 1;
 }

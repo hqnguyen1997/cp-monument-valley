@@ -49,84 +49,84 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void FindPath()
-    {
-        List<Transform> nextCubes = new List<Transform>();
-        List<Transform> pastCubes = new List<Transform>();
+    // void FindPath()
+    // {
+    //     List<Transform> nextCubes = new List<Transform>();
+    //     List<Transform> pastCubes = new List<Transform>();
 
-        foreach (WalkPath path in currentPlatform.GetComponent<Walkable>().possiblePaths)
-        {
-            if (path.active)
-            {
-                nextCubes.Add(path.target);
-                path.target.GetComponent<Walkable>().previousBlock = currentPlatform;
-            }
-        }
+    //     foreach (WalkPath path in currentPlatform.GetComponent<Walkable>().possiblePaths)
+    //     {
+    //         if (path.active)
+    //         {
+    //             nextCubes.Add(path.target);
+    //             path.target.GetComponent<Walkable>().previousBlock = currentPlatform;
+    //         }
+    //     }
 
-        pastCubes.Add(currentPlatform);
+    //     pastCubes.Add(currentPlatform);
 
-        ExploreCube(nextCubes, pastCubes);
-        BuildPath();
-    }
+    //     ExploreCube(nextCubes, pastCubes);
+    //     BuildPath();
+    // }
 
-    void ExploreCube(List<Transform> nextCubes, List<Transform> visitedCubes)
-    {
-        Transform current = nextCubes.First();
-        nextCubes.Remove(current);
+    // void ExploreCube(List<Transform> nextCubes, List<Transform> visitedCubes)
+    // {
+    //     Transform current = nextCubes.First();
+    //     nextCubes.Remove(current);
 
-        if (current == targetPlatform)
-        {
-            return;
-        }
+    //     if (current == targetPlatform)
+    //     {
+    //         return;
+    //     }
 
-        foreach (WalkPath path in current.GetComponent<Walkable>().possiblePaths)
-        {
-            if (!visitedCubes.Contains(path.target) && path.active)
-            {
-                nextCubes.Add(path.target);
-                path.target.GetComponent<Walkable>().previousBlock = current;
-            }
-        }
+    //     foreach (WalkPath path in current.GetComponent<Walkable>().possiblePaths)
+    //     {
+    //         if (!visitedCubes.Contains(path.target) && path.active)
+    //         {
+    //             nextCubes.Add(path.target);
+    //             path.target.GetComponent<Walkable>().previousBlock = current;
+    //         }
+    //     }
 
-        visitedCubes.Add(current);
+    //     visitedCubes.Add(current);
 
-        if (nextCubes.Any())
-        {
-            ExploreCube(nextCubes, visitedCubes);
-        }
-    }
+    //     if (nextCubes.Any())
+    //     {
+    //         ExploreCube(nextCubes, visitedCubes);
+    //     }
+    // }
 
-    void BuildPath()
-    {
-        Transform cube = targetPlatform;
-        while (cube != currentPlatform)
-        {
-            finalPath.Add(cube);
-            if (cube.GetComponent<Walkable>().previousBlock != null)
-                cube = cube.GetComponent<Walkable>().previousBlock;
-            else
-                return;
-        }
+    // void BuildPath()
+    // {
+    //     Transform cube = targetPlatform;
+    //     while (cube != currentPlatform)
+    //     {
+    //         finalPath.Add(cube);
+    //         if (cube.GetComponent<Walkable>().previousBlock != null)
+    //             cube = cube.GetComponent<Walkable>().previousBlock;
+    //         else
+    //             return;
+    //     }
 
-        finalPath.Insert(0, targetPlatform);
+    //     finalPath.Insert(0, targetPlatform);
         
-        FollowPath();
-    }
+    //     FollowPath();
+    // }
 
-    void FollowPath()
+    void FollowPath(List<Transform> path)
     {
         Sequence s = DOTween.Sequence();
 
         walking = true;
 
-        for (int i = finalPath.Count - 1; i > 0; i--)
+        for (int i = path.Count - 1; i > 0; i--)
         {
-            float time = finalPath[i].GetComponent<Walkable>().isStair ? 1.5f : 1;
+            float time = path[i].GetComponent<Walkable>().isStair ? 1.5f : 1;
 
-            s.Append(transform.DOMove(finalPath[i].GetComponent<Walkable>().GetWalkPoint(), .2f * time).SetEase(Ease.Linear));
+            s.Append(transform.DOMove(path[i].GetComponent<Walkable>().GetWalkPoint(), .2f * time).SetEase(Ease.Linear));
 
-            if(!finalPath[i].GetComponent<Walkable>().dontRotate)
-               s.Join(transform.DOLookAt(finalPath[i].position, .1f, AxisConstraint.Y, Vector3.up));
+            if(!path[i].GetComponent<Walkable>().dontRotate)
+               s.Join(transform.DOLookAt(path[i].position, .1f, AxisConstraint.Y, Vector3.up));
         }
 
         if (targetPlatform.GetComponent<Walkable>().isButton)
@@ -175,7 +175,59 @@ public class PlayerController : MonoBehaviour
     public void MovePlayer() {
         DOTween.Kill(gameObject.transform);
         finalPath.Clear();
-        FindPath();
+        // FindPath();
+        /**
+        Hier find path
+        */
+        DijkstraSearch();
+        List<Transform> path = GetShortestPath();
+        FollowPath(path);
+    }
+
+    public List<Transform> GetShortestPath()
+    {
+        DijkstraSearch();
+        var shortestPath = new List<Transform>();
+        shortestPath.Add(targetPlatform);
+        BuildShortestPath(shortestPath, targetPlatform);
+        // shortestPath;
+        return shortestPath;
+    }
+
+    private void BuildShortestPath(List<Transform> list, Transform node)
+    {
+        if (node.GetComponent<Walkable>().NearestToStart == null)
+            return;
+        list.Add(node.GetComponent<Walkable>().NearestToStart);
+        BuildShortestPath(list, node.GetComponent<Walkable>().NearestToStart);
+    }
+    private void DijkstraSearch()
+    {
+        currentPlatform.GetComponent<Walkable>().MinCostToStart = 0;
+        var prioQueue = new List<Transform>();
+        prioQueue.Add(currentPlatform);
+        do {
+            prioQueue = prioQueue.OrderBy(x => x.GetComponent<Walkable>().MinCostToStart).ToList();
+            var node = prioQueue.First();
+            prioQueue.Remove(node);
+            foreach (var cnn in node.GetComponent<Walkable>().possiblePaths.OrderBy(x => x.Cost))
+            {
+                var childNode = cnn.target;
+                if (childNode.GetComponent<Walkable>().Visited)
+                    continue;
+                if (childNode.GetComponent<Walkable>().MinCostToStart == 0 ||
+                    node.GetComponent<Walkable>().MinCostToStart + cnn.Cost < childNode.GetComponent<Walkable>().MinCostToStart)
+                {
+                    childNode.GetComponent<Walkable>().MinCostToStart = node.GetComponent<Walkable>().MinCostToStart + cnn.Cost;
+                    childNode.GetComponent<Walkable>().NearestToStart = node;
+                    if (!prioQueue.Contains(childNode))
+                        prioQueue.Add(childNode);
+                }
+            }
+            node.GetComponent<Walkable>().Visited = true;
+            if (node == targetPlatform)
+                return;
+        } while (prioQueue.Any());
     }
 
     /*  Check if click hits a platform
