@@ -49,77 +49,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // void FindPath()
-    // {
-    //     List<Transform> nextCubes = new List<Transform>();
-    //     List<Transform> pastCubes = new List<Transform>();
-
-    //     foreach (WalkPath path in currentPlatform.GetComponent<Walkable>().possiblePaths)
-    //     {
-    //         if (path.active)
-    //         {
-    //             nextCubes.Add(path.target);
-    //             path.target.GetComponent<Walkable>().previousBlock = currentPlatform;
-    //         }
-    //     }
-
-    //     pastCubes.Add(currentPlatform);
-
-    //     ExploreCube(nextCubes, pastCubes);
-    //     BuildPath();
-    // }
-
-    // void ExploreCube(List<Transform> nextCubes, List<Transform> visitedCubes)
-    // {
-    //     Transform current = nextCubes.First();
-    //     nextCubes.Remove(current);
-
-    //     if (current == targetPlatform)
-    //     {
-    //         return;
-    //     }
-
-    //     foreach (WalkPath path in current.GetComponent<Walkable>().possiblePaths)
-    //     {
-    //         if (!visitedCubes.Contains(path.target) && path.active)
-    //         {
-    //             nextCubes.Add(path.target);
-    //             path.target.GetComponent<Walkable>().previousBlock = current;
-    //         }
-    //     }
-
-    //     visitedCubes.Add(current);
-
-    //     if (nextCubes.Any())
-    //     {
-    //         ExploreCube(nextCubes, visitedCubes);
-    //     }
-    // }
-
-    // void BuildPath()
-    // {
-    //     Transform cube = targetPlatform;
-    //     while (cube != currentPlatform)
-    //     {
-    //         finalPath.Add(cube);
-    //         if (cube.GetComponent<Walkable>().previousBlock != null)
-    //             cube = cube.GetComponent<Walkable>().previousBlock;
-    //         else
-    //             return;
-    //     }
-
-    //     finalPath.Insert(0, targetPlatform);
-        
-    //     FollowPath();
-    // }
-
-    void FollowPath(List<Transform> path)
+    void ExecuteMovevements(List<Transform> path)
     {
         Sequence s = DOTween.Sequence();
 
         walking = true;
 
-        for (int i = path.Count - 1; i > 0; i--)
+        for (int i = path.Count - 1; i >= 0; i--)
         {
             float time = path[i].GetComponent<Walkable>().isStair ? 1.5f : 1;
 
@@ -127,6 +63,10 @@ public class PlayerController : MonoBehaviour
 
             if(!path[i].GetComponent<Walkable>().dontRotate)
                s.Join(transform.DOLookAt(path[i].position, .1f, AxisConstraint.Y, Vector3.up));
+            // Clear dijkstra attribute
+            path[i].GetComponent<Walkable>().Visited = false;
+            path[i].GetComponent<Walkable>().MinCostToStart = 0;
+            path[i].GetComponent<Walkable>().NearestToStart = null;
         }
 
         if (targetPlatform.GetComponent<Walkable>().isButton)
@@ -181,7 +121,7 @@ public class PlayerController : MonoBehaviour
         */
         DijkstraSearch();
         List<Transform> path = GetShortestPath();
-        FollowPath(path);
+        ExecuteMovevements(path);
     }
 
     public List<Transform> GetShortestPath()
