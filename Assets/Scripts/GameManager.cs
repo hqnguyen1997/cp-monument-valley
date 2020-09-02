@@ -38,13 +38,6 @@ public class GameManager : MonoBehaviour
         if (player.walking)
             return;
 
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            int multiplier = Input.GetKey(KeyCode.RightArrow) ? 1 : -1;
-            pivots[0].DOComplete();
-            pivots[0].DORotate(new Vector3(0, 90 * multiplier, 0), .6f, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
-        }
-
         foreach(Transform t in objectsToHide)
         {
             t.gameObject.SetActive(pivots[0].eulerAngles.y > 45 && pivots[0].eulerAngles.y < 90 + 45);
