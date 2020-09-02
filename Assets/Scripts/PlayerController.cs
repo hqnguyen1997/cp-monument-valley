@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour
         {
             float time = path[i].GetComponent<Walkable>().isStair ? 1.5f : 1;
 
+            // Break moving if path to next node not active
             if (path[i].GetComponent<Walkable>().possiblePaths.FindAll(item => item.active == false).Count > 0) {
                 return;
             }
@@ -64,7 +65,6 @@ public class PlayerController : MonoBehaviour
             if(!path[i].GetComponent<Walkable>().dontRotate)
                s.Join(transform.DOLookAt(path[i].position, .1f, AxisConstraint.Y, Vector3.up));
         }
-
     }
 
     public void GetPlayerCurrentPosition()
@@ -78,18 +78,10 @@ public class PlayerController : MonoBehaviour
             if (playerHit.transform.GetComponent<Walkable>() != null)
             {
                 currentPlatform = playerHit.transform;
-
-                // if (playerHit.transform.GetComponent<Walkable>().isStair)
-                // {
-                //     DOVirtual.Float(GetBlend(), blend, .1f, SetBlend);
-                // }
-                // else
-                // {
-                //     DOVirtual.Float(GetBlend(), 0, .1f, SetBlend);
-                // }
             }
         }
     }
+
     /* Move player to target platform
     */
     public void MovePlayer() {
@@ -113,11 +105,15 @@ public class PlayerController : MonoBehaviour
 
     private void BuildShortestPath(List<Transform> list, Transform node)
     {
-        if (node.GetComponent<Walkable>().NearestToStart == null)
-            return;
+        if (node.GetComponent<Walkable>().NearestToStart == null) return;
+
+        // Fix always go back one platform before moving
+        if (node.GetComponent<Walkable>().NearestToStart == currentPlatform) return;
+
         list.Add(node.GetComponent<Walkable>().NearestToStart);
         BuildShortestPath(list, node.GetComponent<Walkable>().NearestToStart);
     }
+
     private void DijkstraSearch()
     {
         currentPlatform.GetComponent<Walkable>().MinCostToStart = 0;
