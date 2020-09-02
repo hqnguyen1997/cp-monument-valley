@@ -2253,6 +2253,15 @@ MonoBehaviour:
       index: 1
     - block: {fileID: 1655977875}
       index: 0
+  - pathConditionName: Last Connector
+    conditions:
+    - conditionObject: {fileID: 1314552242}
+      eulerAngle: {x: 0, y: 157, z: 90}
+    paths:
+    - block: {fileID: 1502274327}
+      index: 0
+    - block: {fileID: 1070277901}
+      index: 0
   pivots:
   - {fileID: 1314552242}
   objectsToHide: []

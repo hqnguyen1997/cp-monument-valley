@@ -55,16 +55,16 @@ public class PlayerController : MonoBehaviour
         {
             float time = path[i].GetComponent<Walkable>().isStair ? 1.5f : 1;
 
+            if (path[i].GetComponent<Walkable>().possiblePaths.FindAll(item => item.active == false).Count > 0) {
+                return;
+            }
+
             s.Append(transform.DOMove(path[i].GetComponent<Walkable>().GetWalkPoint(), .2f * time).SetEase(Ease.Linear));
 
             if(!path[i].GetComponent<Walkable>().dontRotate)
                s.Join(transform.DOLookAt(path[i].position, .1f, AxisConstraint.Y, Vector3.up));
         }
 
-        if (targetPlatform.GetComponent<Walkable>().isButton)
-        {
-            s.AppendCallback(()=>GameManager.instance.RotateRightPivot());
-        }
     }
 
     public void GetPlayerCurrentPosition()
