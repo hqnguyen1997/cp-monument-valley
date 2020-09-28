@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using DG.Tweening;
+using UnityEngine.UI;
 
 /* This script need to be assigned to a player object */
 [SelectionBase]
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour
     public Transform targetPlatform;
     public Transform indicator;
 
+    public Text winText;
     private float blend;
 
     void Start()
@@ -65,6 +67,15 @@ public class PlayerController : MonoBehaviour
             if(!path[i].GetComponent<Walkable>().dontRotate)
                s.Join(transform.DOLookAt(path[i].position, .1f, AxisConstraint.Y, Vector3.up));
         }
+
+        if (targetPlatform.GetComponent<Walkable>().isButton)
+        {
+            s.AppendCallback(()=> {
+                // Set Text on screen
+                winText.text = "You win";
+            });
+        }
+
     }
 
     public void GetPlayerCurrentPosition()
@@ -82,8 +93,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /* Move player to target platform
-    */
+    /**
+     * Move player to target plattform
+     */
     public void MovePlayer() {
         DOTween.Kill(gameObject.transform);
         ClearOldDijkstraAttributes();
@@ -99,7 +111,6 @@ public class PlayerController : MonoBehaviour
         var shortestPath = new List<Transform>();
         shortestPath.Add(targetPlatform);
         BuildShortestPath(shortestPath, targetPlatform);
-        // shortestPath;
         return shortestPath;
     }
 
@@ -152,9 +163,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /*  Check if click hits a platform
-        set the target platform and return true 
-    */
+    /*  
+     * Check if click hits a platform
+     * set the target platform and return true 
+     */
     public bool isClickedOnPlatform() {
         if (Input.GetMouseButtonDown(0))
         {
@@ -179,14 +191,5 @@ public class PlayerController : MonoBehaviour
             Gizmos.DrawRay(ray);
         }
     }
-
-    // float GetBlend()
-    // {
-    //     return GetComponentInChildren<Animator>().GetFloat("Blend");
-    // }
-    // void SetBlend(float x)
-    // {
-    //     GetComponentInChildren<Animator>().SetFloat("Blend", x);
-    // }
 
 }

@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        /* Check active path */
         foreach(PathCondition pc in pathConditions)
         {
             int count = 0;
@@ -48,12 +49,6 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
         }
 
-    }
-
-    public void RotateRightPivot()
-    {
-        pivots[1].DOComplete();
-        pivots[1].DORotate(new Vector3(0, 0, 90), .6f).SetEase(Ease.OutBack);
     }
 }
 

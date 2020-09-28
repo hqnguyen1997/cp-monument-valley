@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * This script should be assigned to each plattform
+ * in level, where player can walk
+ */
 public class Walkable : MonoBehaviour
 {
-
     public List<WalkPath> possiblePaths = new List<WalkPath>();
 
     [Space]

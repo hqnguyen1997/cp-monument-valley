@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+/**
+ * This script should be assigned to rotatable level
+ */
 public class Rotatable : MonoBehaviour
 {
     public char axis;
