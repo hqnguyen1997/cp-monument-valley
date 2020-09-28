@@ -26,8 +26,7 @@ public class Walkable : MonoBehaviour
 
     public Vector3 GetWalkPoint()
     {
-        float stair = isStair ? stairOffset : 0;
-        return transform.position + transform.up * walkPointOffset - transform.up * stair;
+        return transform.position + transform.up * walkPointOffset;
     }
 
     private void OnDrawGizmos()
